@@ -1,7 +1,8 @@
 # Telegram bot "aiya"
-![GitHub Release](https://img.shields.io/github/v/release/lZemphix/aiya_bot) ![Static Badge](https://img.shields.io/badge/python-3.10.6-blue)
 
 ![image](https://github.com/lZemphix/aiya_bot/assets/160344440/11be8d66-aaf1-4f19-a4c9-866bdeb764e3)
+
+![GitHub Release](https://img.shields.io/github/v/release/lZemphix/aiya_bot) ![Static Badge](https://img.shields.io/badge/python-3.10.6-blue)
 
 
 
