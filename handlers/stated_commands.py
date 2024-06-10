@@ -1,14 +1,20 @@
+import os
+from dotenv import load_dotenv
+from pathlib import Path
 from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
-from aiogram.types import Message, CallbackQuery, ContentType
+from aiogram.types import Message, CallbackQuery
 from aiogram import Bot
 from utils.states import *
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from keyboards import inline
-from data import desc
-from data.config import UID
 from utils import dicts, states
+
+dotenv_path = Path('data/.env')
+load_dotenv(dotenv_path=dotenv_path)
+
+UID = os.getenv("Z_UID")
 
 router = Router()
 
@@ -20,7 +26,7 @@ async def start(message: Message):
 
     Выводит сообщение "Привет, ник!"
     """
-    await message.answer(f"""{desc.start(message)}""", reply_markup = inline.Kb_maker().callback_buttons(titles=["Отправить фанфик", "Отправить анкету"], callbacks=["connect", "soautor"], main_button = False, rows=2))
+    await message.answer(f"Привет, {message.from_user.first_name}", reply_markup = inline.Kb_maker().callback_buttons(titles=["Отправить фанфик", "Отправить анкету"], callbacks=["connect", "soautor"], main_button = False, rows=2))
 
 @router.message(Command("cancel"), ~StateFilter(default_state))
 async def cancel_accept(message: Message, state: FSMContext):
@@ -73,7 +79,7 @@ async def image_handler(message: Message, state: FSMContext, bot: Bot):
         await state.update_data(id = message.from_user.id)
         await message.answer(f"Фанфик успешно отправлен!")
         dicts.f_dict[message.from_user.id] = await state.get_data()
-        await bot.send_photo(chat_id = UID[0], photo = dicts.f_dict[message.from_user.id]['image'],  caption = f"""Ник: `{dicts.f_dict[message.from_user.id]['user_name']}`
+        await bot.send_photo(chat_id = UID, photo = dicts.f_dict[message.from_user.id]['image'],  caption = f"""Ник: `{dicts.f_dict[message.from_user.id]['user_name']}`
 Ссылка: {dicts.f_dict[message.from_user.id]['link']}
 Айди: `{dicts.f_dict[message.from_user.id]['id']}`""", parse_mode = "MARKDOWN", reply_markup = inline.Kb_maker().callback_buttons(["Ответить"], [str(dicts.f_dict[message.from_user.id]['id'])], main_button=False))
     if message.video:
@@ -81,12 +87,12 @@ async def image_handler(message: Message, state: FSMContext, bot: Bot):
         await state.update_data(id = message.from_user.id)
         await message.answer(f"Фанфик успешно отправлен!")
         dicts.f_dict[message.from_user.id] = await state.get_data()
-        await bot.send_video(chat_id = UID[0], video = dicts.f_dict[message.from_user.id]['video'],  caption = f"""Ник: `{dicts.f_dict[message.from_user.id]['user_name']}`
+        await bot.send_video(chat_id = UID, video = dicts.f_dict[message.from_user.id]['video'],  caption = f"""Ник: `{dicts.f_dict[message.from_user.id]['user_name']}`
 Ссылка: {dicts.f_dict[message.from_user.id]['link']}
 Айди: `{dicts.f_dict[message.from_user.id]['id']}`""", parse_mode = "MARKDOWN", reply_markup = inline.Kb_maker().callback_buttons(["Ответить"], [str(dicts.f_dict[message.from_user.id]['id'])], main_button=False))
     dicts.f_dict.clear()
     await state.clear()
-    await message.answer(f"""{desc.start(message)}""", reply_markup = inline.Kb_maker().callback_buttons(titles=["Отправить фанфик", "Отправить анкету"], callbacks=["connect", "soautor"], main_button = False, rows=2))
+    await message.answer(f"Привет, {message.from_user.first_name}", reply_markup = inline.Kb_maker().callback_buttons(titles=["Отправить фанфик", "Отправить анкету"], callbacks=["connect", "soautor"], main_button = False, rows=2))
 
 
 @router.message(StateFilter(states.send_message.image))
@@ -109,16 +115,16 @@ async def send_answer_to_admin_handler(message: Message, state: FSMContext, bot:
     if message.text:
         await state.update_data(message = message.text)
         dicts.f_dict[message.from_user.id] = await state.get_data()
-        await bot.send_message(chat_id = UID[0], text = f"""Сообщение от пользователя с айди `{dicts.f_dict[message.from_user.id]['uid']}`
+        await bot.send_message(chat_id = UID, text = f"""Сообщение от пользователя с айди `{dicts.f_dict[message.from_user.id]['uid']}`
 
 {message.text}""",  reply_markup = inline.Kb_maker().callback_buttons(["Ответить"], [str(dicts.f_dict[message.from_user.id]['uid'])], main_button=False), parse_mode = "MARKDOWN")
     if message.photo:
         await state.update_data(message = message.text)
         dicts.f_dict[message.from_user.id] = await state.get_data()
-        await bot.send_photo(chat_id = UID[0], caption = f"Сообщение от пользователя с айди `{dicts.f_dict[message.from_user.id]['uid']}`" ,photo = message.photo[-1].file_id, reply_markup = inline.Kb_maker().callback_buttons(["Ответить"], [str(dicts.f_dict[message.from_user.id]['uid'])], main_button=False))
+        await bot.send_photo(chat_id = UID, caption = f"Сообщение от пользователя с айди `{dicts.f_dict[message.from_user.id]['uid']}`" ,photo = message.photo[-1].file_id, reply_markup = inline.Kb_maker().callback_buttons(["Ответить"], [str(dicts.f_dict[message.from_user.id]['uid'])], main_button=False))
     if message.video:
         dicts.f_dict[message.from_user.id] = await state.get_data()
-        await bot.send_video(chat_id = UID[0],caption = f"Сообщение от пользователя с айди `{dicts.f_dict[message.from_user.id]['uid']}`" , video = message.video.file_id, reply_markup = inline.Kb_maker().callback_buttons(["Ответить"], [str(dicts.f_dict[message.from_user.id]['uid'])], main_button=False))
+        await bot.send_video(chat_id = UID,caption = f"Сообщение от пользователя с айди `{dicts.f_dict[message.from_user.id]['uid']}`" , video = message.video.file_id, reply_markup = inline.Kb_maker().callback_buttons(["Ответить"], [str(dicts.f_dict[message.from_user.id]['uid'])], main_button=False))
     await message.answer(f"Сообщение успешно отправлено!")
     await state.clear()
 
@@ -129,7 +135,7 @@ async def answer_handler(callback: CallbackQuery, digits: int , state: FSMContex
     
     await callback.message.answer(f"""Введи сообщение для пользователя или напиши /cancel для отмены.""")
     await state.set_state(states.send_ans.message)
-    # print(dicts.user_dict)
+
 
 
 @router.message(StateFilter(states.send_ans.message), F.text | F.video | F.photo)
@@ -200,9 +206,8 @@ async def expirience(message: Message, state: FSMContext):
 async def send(message: Message, state: FSMContext, bot: Bot):
     await state.update_data(expirience = message.text)
     dicts.soautor_dict[message.from_user.id] = await state.get_data()
-    # print(dicts.soautor_dict)
     await message.answer("Анкета успешно отправлена!")
-    await bot.send_message(UID[0], f"""Анкета:
+    await bot.send_message(UID, f"""Анкета:
                            
 username: @{dicts.soautor_dict[message.from_user.id]['username']}
 Роль: {dicts.soautor_dict[message.from_user.id]['soautor']}
@@ -213,3 +218,4 @@ username: @{dicts.soautor_dict[message.from_user.id]['username']}
 Слабые стороны: {dicts.soautor_dict[message.from_user.id]['weak_sides']}
 Опыт: {dicts.soautor_dict[message.from_user.id]['expirience']}""", reply_markup=inline.Kb_maker().callback_buttons(["Ответить"], [f"{message.from_user.id}"], main_button=False))
     await state.clear()
+
