@@ -1,6 +1,4 @@
 # Telegram bot "aiya"
-![GitHub tag status](https://img.shields.io/github/checks-status/lZemphix/aiya_bot/1.1)
-
 
 
 ## Discription
