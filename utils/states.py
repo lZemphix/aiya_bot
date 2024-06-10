@@ -11,3 +11,16 @@ class send_message(StatesGroup):
 class send_answer(StatesGroup):
     id = State()
     answer_to_user = State()
+
+class send_ans(StatesGroup):
+    message = State()
+
+class send_soautor(StatesGroup):
+    soautor = State()
+    ways = State()
+    marks = State()
+    anti_marks = State()
+    strong_sides = State()
+    weak_sides = State()
+    expirience = State()
+    send = State()
