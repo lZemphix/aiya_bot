@@ -155,9 +155,9 @@ async def send_answer_to_user_handler(message: Message, state: FSMContext):
     await message.answer("Кто-то накосячил... Пожалуйста, введите сообщения для пользователя еще раз или напишите /cancel для отмены.")
 
 @router.callback_query(F.data == "soautor")
-async def profile(message: Message, state: FSMContext):
-    await state.update_data(profile = message.text)
-    await message.answer("Вставьте ссылку вашего профиля на фб или напишите /cancel для отмены.")
+async def profile(callback: CallbackQuery, state: FSMContext):
+    await state.update_data(profile = callback.message.text)
+    await callback.message.answer("Вставьте ссылку вашего профиля на фб или напишите /cancel для отмены.")
     await state.set_state(states.send_soautor.profile)
 
 @router.message(StateFilter(states.send_soautor.profile), F.text)
