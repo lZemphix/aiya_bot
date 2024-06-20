@@ -155,10 +155,15 @@ async def send_answer_to_user_handler(message: Message, state: FSMContext):
     await message.answer("Кто-то накосячил... Пожалуйста, введите сообщения для пользователя еще раз или напишите /cancel для отмены.")
 
 @router.callback_query(F.data == "soautor")
+async def profile(message: Message, state: FSMContext):
+    await state.update_data(profile = message.text)
+    await message.answer("Вставьте ссылку вашего профиля на фб или напишите /cancel для отмены.")
+    await state.set_state(states.send_soautor.profile)
+
+@router.message(StateFilter(states.send_soautor.profile), F.text)
 async def soautor(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer("Напишите, в качестве кого Вы отправляете анкету (бета/гамма/соавтор) или напишите /cancel для отмены.")
     await state.set_state(states.send_soautor.soautor)
-
 
 @router.message(StateFilter(states.send_soautor.soautor), F.text)
 async def ways(message: Message, state: FSMContext):

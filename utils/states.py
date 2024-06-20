@@ -16,6 +16,7 @@ class send_ans(StatesGroup):
     message = State()
 
 class send_soautor(StatesGroup):
+    profile = State()
     soautor = State()
     ways = State()
     marks = State()
